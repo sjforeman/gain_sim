@@ -30,9 +30,9 @@ class SimulateGainVariationStack(task.SingleTask, random.RandomTask):
         # Load RFI mask array on rank 0, and distribute shape to all ranks
         if self.comm.rank == 0:
             self.rfi_masks = np.load(self.rfi_mask_file)
-            rfi_masks_shape = self.rfi_masks.shape
+            rfi_masks_shape = np.array(self.rfi_masks.shape)
         else:
-            rfi_masks_shape = (0, 0, 0)
+            rfi_masks_shape = np.array([0, 0, 0])
 
         mpiutil.barrier()
         self.comm.Bcast(rfi_masks_shape, root=0)
