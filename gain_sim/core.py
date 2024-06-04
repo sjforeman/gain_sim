@@ -95,7 +95,7 @@ class SimulateGainVariationStack(task.SingleTask, random.RandomTask):
                 * np.exp(
                     1j
                     * self.rng.standard_normal(size=(nfreq, nstack, nra))
-                    * self.gain_amp_std
+                    * self.gain_phase_std
                 )
             )
 
