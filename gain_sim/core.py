@@ -85,6 +85,7 @@ class SimulateGainVariationStack(task.SingleTask, random.RandomTask):
         # Do so by looping over days, to save memory
         gain_prefactor = np.zeros((nfreq, nstack, nra), dtype=np.complex64)
         for i in range(ndays):
+            self.log.debug(f"Computing gains for day {i}")
             # Each gain variation is A * exp(i * Phi), where A and Phi are Gaussian-
             # distributed
             gain_prefactor += (
