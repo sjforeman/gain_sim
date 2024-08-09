@@ -162,6 +162,9 @@ class SimulateGainVariationStack(task.SingleTask, random.RandomTask):
             # Generate gains with random amplitudes and delays that are uncorrelated
             # in day but constant in frequency, baseline+pol, and RA
 
+            # Initialize RNG (must be done on all ranks)
+            _ = self.rng
+
             if self.comm.rank == 0:
                 # Generate gain array with shape (ndays, nfreq)
                 gains = (
@@ -177,7 +180,7 @@ class SimulateGainVariationStack(task.SingleTask, random.RandomTask):
                         * self.gain_delay_std
                         * 1e-12
                     )
-                )
+                ).astype(np.complex64)
             else:
                 gains = np.zeros((ndays, nfreq)).astype(np.complex64)
 
@@ -201,7 +204,6 @@ class SimulateGainVariationStack(task.SingleTask, random.RandomTask):
             # Normalize gain sum by sum of RFI masks over days.
             # gain_prefactor has shape (nfreq, nra)
             gain_prefactor *= tools.invert_no_zero(np.sum(self.rfi_masks, axis=0))
-
             # Multiply visibilities by RFI-mask-weighted gains
             vis *= 1 + gain_prefactor[:, np.newaxis, :]
 
