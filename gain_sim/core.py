@@ -64,7 +64,7 @@ class SimulateGainVariationStack(task.SingleTask, random.RandomTask):
         else:
             rfi_masks_shape = np.array([0, 0, 0])
 
-        mpiutil.barrier()
+        self.comm.barrier()
         self.comm.Bcast(rfi_masks_shape, root=0)
 
         # Distribute RFI mask array to all ranks
@@ -184,7 +184,7 @@ class SimulateGainVariationStack(task.SingleTask, random.RandomTask):
             else:
                 gains = np.zeros((ndays, nfreq)).astype(np.complex64)
 
-            mpiutil.barrier()
+            self.comm.barrier()
             self.comm.Bcast(gains, root=0)
 
             # Compute gain-weighted RFI mask sum, with shape (nfreq, nra)
